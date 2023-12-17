@@ -78,7 +78,7 @@ export default function PostForm() {
           .then(res => Base64Obj = res)
           .catch(err => console.log(err))
           const updateObj = { postId, ...values, image: typeof(values.image) =='string'? values.image :Base64Obj }
-          dispatch(updatePost(updateObj));
+          await dispatch(updatePost(updateObj));
         } else {
           let Base64Obj = '';
           await getBase64(values.image)
@@ -87,7 +87,7 @@ export default function PostForm() {
 
           const createObj = { ...values, image: Base64Obj }
           console.log('values for post',)
-          dispatch(createPost(createObj));
+          await dispatch(createPost(createObj));
         }
 
       }}

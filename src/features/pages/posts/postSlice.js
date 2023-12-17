@@ -74,7 +74,9 @@ const postSlice = createSlice({
     [createPost.fulfilled]: (state, action) => {
       state.status = 'succeeded';
       toast.success('Post created successfully');
-      router.navigate('/');
+      setTimeout(() => {
+        router.navigate('/');
+      }, 2000); 
     },
     [createPost.rejected]: (state, action) => {
       state.status = 'failed';
@@ -86,7 +88,9 @@ const postSlice = createSlice({
     [updatePost.fulfilled]: (state, action) => {
       state.status = 'succeeded';
       toast.success('Post updated successfully');
-      router.navigate('/');
+      setTimeout(() => {
+        router.navigate('/');
+      }, 2000); 
     },
     [updatePost.rejected]: (state, action) => {
       state.status = 'failed';

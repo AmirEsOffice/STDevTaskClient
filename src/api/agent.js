@@ -78,7 +78,7 @@ const Posts = {
   List:() =>requests.get("/api/post/crud/",""),
   getOneById:(id) =>requests.get(`/api/post/crud/${id}`,""),
   Delete:(id) =>requests.del(`/api/post/crud/${id}`),
-  Update:(id,body) =>requests.put(`/api/post/crud/${id}`,body),
+  Update: (id,body) =>  requests.put(`/api/post/crud/${id}`,body),
   Add:(body) =>requests.post(`/api/post/crud`,body),
 }
 
