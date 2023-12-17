@@ -3,28 +3,21 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../store/configureStore";
 
-const axiosInstance  =axios.create({
-  referrerPolicy: 'no-referrer', // Set your desired default Referrer Policy here
-});
 
-axiosInstance.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-axiosInstance.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-
-axiosInstance.defaults.baseURL = "http://localhost:3000";
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+axios.defaults.baseURL = process.env.REACT_APP_PUBLIC_URL ;
 //Cors Policy
-//axiosInstance.defaults.withCredentials = false;
+axios.defaults.withCredentials = false;
 
 const responseBody = (response) => response.data;
 
 
-axiosInstance.interceptors.request.use(config => {
+axios.interceptors.request.use(config => {
     const token = store.getState().account.user?.token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
 
-axiosInstance.interceptors.response.use(
+axios.interceptors.response.use(
   async (response) => {
       return response;
   },
@@ -46,7 +39,7 @@ axiosInstance.interceptors.response.use(
           toast.error(data.Title);
           break;
         case 401:
-          router.navigate("/login", { state: { error: data } });
+          router.navigate("/signin", { state: { error: data } });
           break;
         case 500:
           router.navigate("/server-error", { state: { error: data } });
@@ -67,10 +60,10 @@ axiosInstance.interceptors.response.use(
 );
 
 const requests = {
-  get: (url, params) => axiosInstance.get(url, {params}).then(responseBody),
-  post: (url, body) => axiosInstance.post(url, body).then(responseBody),
-  put: (url, body) => axiosInstance.put(url, body).then(responseBody),
-  del: (url) => axiosInstance.delete(url).then(responseBody)
+  get: (url, params) => axios.get(url, {params}).then(responseBody),
+  post: (url, body) => axios.post(url, body).then(responseBody),
+  put: (url, body) => axios.put(url, body).then(responseBody),
+  del: (url) => axios.delete(url).then(responseBody)
 }
 
 const UserProfile = {

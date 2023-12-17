@@ -56,3 +56,8 @@ input[type=number] {
 .hide-scrollbar::-webkit-scrollbar { 
   display: none;
 }
+
+.MuiPagination-root {
+  position: absolute;
+  bottom: 20px;
+}

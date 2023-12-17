@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Pagination from "@mui/material/Pagination";
 import Button from "@mui/material/Button";
@@ -12,7 +12,7 @@ import { deletePost, fetchPosts } from "./postSlice";
 
 function Posts() {
   const dispatch = UseAppDispatch();
-  const slice= UseAppSelector((state)=>state.posts);
+  const slice = UseAppSelector((state) => state.posts);
   const navigate = useNavigate();
 
 
@@ -23,18 +23,19 @@ function Posts() {
   const [deletePostId, setDeletePostId] = useState(null);
 
   const paginatedPost = slice.posts.slice(
-    (page - 1) * postsPerPage, 
+    (page - 1) * postsPerPage,
     page * postsPerPage
   );
- 
 
-  const fetData = async () => {
+
+  const fetchData = async () => {
     await dispatch(fetchPosts());
   }
 
-useEffect(() => {
-  fetData()
-}, [])
+  useEffect(() => {
+    fetchData()
+  }, [])
+ 
 
 
   const handleOpenDialog = (postId) => {
@@ -42,9 +43,9 @@ useEffect(() => {
     setConfirmationDialogOpen(true);
   };
 
-  const handleDeletePost = async() => {
+  const handleDeletePost = async () => {
     await dispatch(deletePost(deletePostId));
-     fetData();
+    fetchData();
   };
 
   return (
@@ -56,9 +57,9 @@ useEffect(() => {
         alignItems="center"
       >
         <Typography variant="h2" color={"GrayText"} component="h1">
-          All Posts 
+          All Posts
         </Typography>
-        <Button onClick={()=>navigate("/post")} variant="contained" startIcon={<Add />} sx={{ px: 3 }}>
+        <Button onClick={() => navigate("/post")} variant="contained" startIcon={<Add />} sx={{ px: 3 }}>
           <Typography variant="h6" component="h1">
             New Post
           </Typography>
@@ -77,24 +78,24 @@ useEffect(() => {
       >
         <Grid container spacing={4}>
           {
-            paginatedPost.map((post)=>(
+            paginatedPost.map((post) => (
               <Grid key={post.Id} item xs={12} sm={6} md={6}>
-                 <CostumCard cardData={post} handleClickDelete={handleOpenDialog} />
-               </Grid>
+                <CostumCard cardData={post} handleClickDelete={handleOpenDialog} />
+              </Grid>
             ))
           }
         </Grid>
 
-        <Pagination sx={{my:3}} page={page} onChange={(e,value)=> setPage(value)} count={TotalPage} shape="rounded" />
+        <Pagination sx={{ my: 3 }} page={page} onChange={(e, value) => setPage(value)} count={TotalPage} shape="rounded" />
       </Box>
 
-      <ConfirmDialog 
-        
-        children = {<Typography color={"GrayText"}>Are you sure you want to delete this post?</Typography>}
-          open={confirmationDialogOpen}
-           setOpen={setConfirmationDialogOpen}
-            onConfirm={handleDeletePost}
-            
+      <ConfirmDialog
+
+        children={<Typography color={"GrayText"}>Are you sure you want to delete this post?</Typography>}
+        open={confirmationDialogOpen}
+        setOpen={setConfirmationDialogOpen}
+        onConfirm={handleDeletePost}
+
       />
     </Container>
   );

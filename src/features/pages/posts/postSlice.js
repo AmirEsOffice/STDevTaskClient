@@ -39,9 +39,9 @@ export const deletePost = createAsyncThunk(
 export const createPost = createAsyncThunk(
   'posts/createPost',
   async (initialPost) => {
-    const { Name,CategoryId ,Description} = initialPost;
-    const updateObject = {name:Name,description:Description,category:CategoryId}
-    const response = await agent.Posts.Add(updateObject);
+    let formData = new FormData();
+    formData.append("file", initialPost.image);
+    const response = await agent.Posts.Add(initialPost);
     return response.data;
   }
 );
@@ -49,9 +49,8 @@ export const createPost = createAsyncThunk(
 export const updatePost = createAsyncThunk(
   'posts/updatePost',
   async (initialPost) => {
-    const { Name,CategoryId ,postId,Description} = initialPost;
-    const updateObject = {name:Name,description:Description,category:CategoryId}
-    const response = await agent.Posts.Update(postId, updateObject);
+    const { postId} = initialPost;
+    const response = await agent.Posts.Update(postId, initialPost);
     return response.data;
   } 
 );

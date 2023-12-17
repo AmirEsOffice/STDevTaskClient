@@ -29,7 +29,7 @@ const ConfirmDialog = (props) => {
           onClick={() => setOpen(false)}
           color="inherit"
         >
-          Cansel
+          Cancel
         </Button>
           </Box>
       </DialogActions>

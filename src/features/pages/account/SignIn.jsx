@@ -1,5 +1,3 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { TextField ,  Checkbox, 
@@ -11,7 +9,6 @@ import { TextField ,  Checkbox,
 import { signInUser } from './accountSlice';
 import { UseAppDispatch } from '../../../store/configureStore';
 import { Link } from 'react-router-dom';
-
 
 const SignIn = () => {
   const dispatch= UseAppDispatch();
@@ -45,21 +42,7 @@ const SignIn = () => {
           onSubmit={values => {
             console.log(values);
             delete values.rememberMe;
-           // dispatch(signInUser(values));
-           //fetch('post','http://localhost:3000/api/user/sign-in/').then(req=> req.text).then(console.log(''));
-
-           axios({
-            method: 'post',
-            mode: "no-cors",  
-            headers: { 'Access-Control-Allow-Origin' : '*' },
-            url: 'http://localhost:3000/api/user/sign-in/',
-            data: { "email":"example@gmail.com",
-            "password":"Example11!"}
-          }).then(function (response) {
-            console.log(response.data);
-          });
-
-
+            dispatch(signInUser(values));
           }}
         >
           {({ values, errors, touched }) => (

@@ -1,19 +1,27 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {Box,Typography} from "@mui/material";
 import styled from '@emotion/styled';
 import PostImage from "../../assets/images/PostImage.png";
 import Avatar from "../../assets/images/AvatarDefault.png";
 import { useTheme } from "@emotion/react";
-const ImageUploader = ({variant , size,onChange,helperText,error}) => {
+const ImageUploader = ({variant , size,onChange,helperText,error,base64Data}) => {
   const [image, setImage] = useState(variant==="Avatar"?Avatar:PostImage);
+  const [base64DataObj, setBase64DataObj] = useState('');
   const inputRef = useRef();
   const theme = useTheme();
-  const handleImageChange = (e) => {
+  const handleImageChange = async(e) => {
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
     setImage(url);
     onChange(e); 
+    setBase64DataObj(url);
   }
+  useEffect(() => {
+    console.log('base64Data',base64Data);
+    if(typeof(base64Data) =='string')
+    setBase64DataObj(base64Data)
+  },[base64Data] )
+  
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -35,7 +43,7 @@ const ImageUploader = ({variant , size,onChange,helperText,error}) => {
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
 
       <img 
-        src={image} 
+        src={base64DataObj  ? base64DataObj : image} 
         
         style={{width: size, height: size,cursor:"pointer" , borderRadius:10,
         border:error?"1px solid ":null,

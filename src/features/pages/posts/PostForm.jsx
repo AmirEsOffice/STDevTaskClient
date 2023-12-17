@@ -12,9 +12,9 @@ import ImageUploader from "../../components/ImageUploader";
 
 const validationSchema = Yup.object({
   image: Yup.mixed().required('Image is required'),
-  Name: Yup.string().required("Required"),
-  Description: Yup.string().required("Required"),
-  CategoryId: Yup.string().required("Required")
+  name: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+  category: Yup.string().required("Required")
 });
 
 export default function PostForm() {
@@ -23,42 +23,73 @@ export default function PostForm() {
   const slice = UseAppSelector((state) => state.posts);
 
 
-  const fetchPostAsync= async()=>{
+  const fetchPostAsync = async () => {
     await dispatch(fetchPostById(postId))
+  }
+  const imageOnchange = async (event, setFieldValue) => {
+    setFieldValue('image', event.target.files[0]);
   }
 
   useEffect(() => {
-    // Fetch categories from API
     dispatch(fetchCategories());
-
-    if(postId){
+    if (postId) {
       fetchPostAsync();
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    if (slice.selectedPost) {
+    }
+  }, [slice]);
+
+ 
+
+  async function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = reject
+    })
+  }
+
+
   return (
     <Formik
       initialValues={
-        slice.selectedPost 
-        || 
+        slice.selectedPost
+        ||
         {
           image: null,
-          Name:"",
-          Description:"",
-          CategoryId:""
+          name: "",
+          description: "",
+          category: ""
         }
       }
       enableReinitialize
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        if(postId){ //updating Post
-          delete values.Id ;
-          const updateObj = {postId,...values}
+      onSubmit={async (values) => {
+        if (postId) { //updating Post
+          delete values.Id;
+          let Base64Obj = '';
+          await getBase64(values.image)
+          .then(res => Base64Obj = res)
+          .catch(err => console.log(err))
+          const updateObj = { postId, ...values, image: typeof(values.image) =='string'? values.image :Base64Obj }
           dispatch(updatePost(updateObj));
-        }else{ // adding Post
-          dispatch(createPost(values));
+        } else {
+          let Base64Obj = '';
+          await getBase64(values.image)
+            .then(res => Base64Obj = res)
+            .catch(err => console.log(err))
+
+          const createObj = { ...values, image: Base64Obj }
+          console.log('values for post',)
+          dispatch(createPost(createObj));
         }
-        
+
       }}
     >
       {({
@@ -71,62 +102,61 @@ export default function PostForm() {
         setFieldValue
       }) => (
         <form onSubmit={handleSubmit}>
-          <Container sx={{py:4}}  maxWidth="sm" >
-            <Box gap={2} display={"flex"} alignItems={"center"}  textAlign={"center"} flexDirection={"column"}>
-            <Typography sx={{my:3}} color={"GrayText"} variant="h3"> {postId ? "Edit" : "Create"} Post</Typography>
-            <ImageUploader  
-            onChange={event => {
-          setFieldValue('image', event.target.files[0]);
-        }} 
-        helperText={touched.image && errors.image}
-        error={touched.image && Boolean(errors.image)}
-        size={200} />
-        
-            <TextField
-              name="Name"
-              fullWidth
-              label="Name"
-              value={values.Name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.Name && Boolean(errors.Name)}
-              helperText={touched.Name && errors.Name}
-            />
+          <Container sx={{ py: 4 }} maxWidth="sm" >
+            <Box gap={2} display={"flex"} alignItems={"center"} textAlign={"center"} flexDirection={"column"}>
+              <Typography sx={{ my: 3 }} color={"GrayText"} variant="h3"> {postId ? "Edit" : "Create"} Post</Typography>
+              <ImageUploader 
+               base64Data={postId ? values.image : null}
+                onChange={(e) => imageOnchange(e, setFieldValue)}
+                helperText={touched.image && errors.image}
+                error={touched.image && Boolean(errors.image)}
+                size={200} />
 
-            <TextField
-              name="Description"
-              fullWidth
-              label="Description"
-              multiline
-              rows={4}
-              value={values.Description}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.Description && Boolean(errors.Description)}
-              helperText={touched.Description && errors.Description}
-            />
+              <TextField
+                name="name"
+                fullWidth
+                label="Name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.name && Boolean(errors.name)}
+                helperText={touched.name && errors.name}
+              />
 
-            <TextField
-              select
-              name="CategoryId"
-              fullWidth
-              label="Category"
-              value={values.CategoryId}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.CategoryId && Boolean(errors.CategoryId)}
-              helperText={touched.CategoryId && errors.CategoryId}
-            >
-              {slice.categories.map((category) => (
-                <MenuItem key={category.Id} value={category.Id}>
-                  {category.Title}
-                </MenuItem>
-              ))}
-            </TextField>
+              <TextField
+                name="description"
+                fullWidth
+                label="Description"
+                multiline
+                rows={4}
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.description && Boolean(errors.description)}
+                helperText={touched.description && errors.description}
+              />
 
-            <Button sx={{px:10,mt:4}} type="submit" variant="contained">
-              {postId ? "Edit" : "Create"}
-            </Button>
+              <TextField
+                select
+                name="category"
+                fullWidth
+                label="Category"
+                value={values.category}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.category && Boolean(errors.category)}
+                helperText={touched.category && errors.category}
+              >
+                {slice.categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.title}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <Button sx={{ px: 10, mt: 4 }} type="submit" variant="contained">
+                {postId ? "Edit" : "Create"}
+              </Button>
             </Box>
           </Container>
         </form>

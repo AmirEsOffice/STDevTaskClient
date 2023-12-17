@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -15,14 +15,15 @@ const CostumCard = ({cardData,handleClickDelete}) => {
 
   return (
     <Card 
-    onMouseEnter={() => setHoveredCard(cardData?.Id)}
+    onMouseEnter={() => setHoveredCard(cardData?.id)}
     onMouseLeave={() => setHoveredCard(null)}
     
     sx={{ display: "flex" }}>
       <CardMedia
         component="img"
         sx={{ width: 200 }}
-        image="https://placehold.co/200"
+        //image="https://placehold.co/200"
+        image =  {cardData?.image || "https://placehold.co/200"}
         alt="Post Title"
       />
       <CardContent sx={{ flexGrow: 1 }}>
@@ -35,7 +36,7 @@ const CostumCard = ({cardData,handleClickDelete}) => {
           variant="body1"
           component="h4"
         >
-          {cardData?.Name}
+          {cardData?.name}
         </Typography>
         <Typography gutterBottom color={"GrayText"} variant="h5" component="h4">
           Description
@@ -46,7 +47,7 @@ const CostumCard = ({cardData,handleClickDelete}) => {
           variant="body1"
           component="h4"
         >
-           {cardData?.Description}
+           {cardData?.description}
         </Typography>
         <Typography gutterBottom color={"GrayText"} variant="h5" component="h4">
           Category
@@ -57,15 +58,15 @@ const CostumCard = ({cardData,handleClickDelete}) => {
           variant="body1"
           component="h4"
         >
-          {cardData?.Title}
+          {cardData?.title}
         </Typography>
       </CardContent>
-      {hoveredCard === cardData?.Id && (
+      {hoveredCard === cardData?.id && (
        <CardActions sx={{ alignItems: "flex-start" }}>
-        <IconButton aria-label="edit" onClick={()=>navigate(`/post/${cardData?.Id}`)}>
+        <IconButton aria-label="edit" onClick={()=>navigate(`/post/${cardData?.id}`)}>
             <EditIcon color="info" />
         </IconButton>
-        <IconButton aria-label="delete" onClick={()=>handleClickDelete(cardData?.Id)}>
+        <IconButton aria-label="delete" onClick={()=>handleClickDelete(cardData?.id)}>
             <DeleteIcon color="error" />
         </IconButton>
      </CardActions>

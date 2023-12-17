@@ -9,12 +9,27 @@ const initialState = {
     status:"idle"
 }
 
+async function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = reject
+    })
+  }
 
 export const signUpUser = createAsyncThunk(
     'account/signUpUser',
     async (data, thunkAPI) => {
         try {
-            await agent.UserProfile.signUp(data);
+            let Base64Obj = '';
+            await getBase64(data.avatar)
+            .then(res => Base64Obj = res)
+            .catch(err => console.log(err))
+            const createUser={...data, avatar:Base64Obj };
+            await agent.UserProfile.signUp(createUser);
         } catch (error) {
             return thunkAPI.rejectWithValue({error: error.data})
         }
@@ -38,7 +53,6 @@ export const signInUser = createAsyncThunk(
 export const fetchCurrentUser = createAsyncThunk(
     'account/fetchCurrentUser',
     async (_, thunkAPI) => {
-        debugger;
         console.log("fetch user");
         let userStorage =JSON.parse(localStorage.getItem('user'))
         thunkAPI.dispatch(setUser(userStorage))

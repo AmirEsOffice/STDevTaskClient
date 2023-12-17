@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
 root.render(
-  <StrictMode>
+  // <StrictMode>
     <Provider store={store}>
         <ThemeProvider theme={theme}>
           <Box component="div">
@@ -28,5 +28,5 @@ root.render(
           </Box>
         </ThemeProvider>
     </Provider>
-  </StrictMode>
+ // </StrictMode> 
 );

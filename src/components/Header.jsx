@@ -10,11 +10,12 @@ import {
   CardHeader,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { UseAppDispatch } from "../store/configureStore";
+import { UseAppDispatch, UseAppSelector } from "../store/configureStore";
 import { signOut } from "../features/pages/account/accountSlice";
 
 function Header() {
   const dispatch = UseAppDispatch();
+  const userSlice = UseAppSelector(state=>state.account);
   return (
     <AppBar elevation={0} sx={{ backgroundColor: "#fff" }} position="static">
       <Toolbar component={Container} maxWidth="lg">
@@ -39,9 +40,9 @@ function Header() {
         <Box display={"flex"} gap={2}>
           <CardHeader
             avatar={
-              <Avatar alt="User Name" src="https://placehold.co/70" />
+              <Avatar alt="User Name" src={userSlice.user?.avatar} />
             }
-            title={"User Name"}
+            title={userSlice.user?.firstName}
             titleTypographyProps={{color: "GrayText"}}
           />
           
